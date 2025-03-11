@@ -1,10 +1,9 @@
 local M = {}
 
 M.setup = function()
-    local extensions = require("unity-dap.vscode.extensions")
-    local ex_root = extensions.find_extension_path("visualstudiotoolsforunity.vstuc")
+    local resolvers = require("unity-dap.resolvers")
+    local ex_root = resolvers.get_unity_extension_path()
     if ex_root == nil then
-        vim.notify("Unity Debug Adapter not found.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
         return
     end
 
@@ -26,7 +25,7 @@ M.setup = function()
             name = "Attach to Unity Engine",
             logFile = logFile,
             endPoint = function()
-                local unity_info = require("unity-dap.resolvers").get_unity_process()
+                local unity_info = resolvers.get_unity_process()
                 if unity_info == nil then
                     return ""
                 end
@@ -39,7 +38,7 @@ M.setup = function()
                 return unity_info.address .. ":" .. unity_info.debuggerPort
             end,
             projectPath = function()
-                local path = require("unity-dap.resolvers").get_project_root_path()
+                local path = resolvers.get_project_root_path()
                 if path == nil then
                     vim.notify("Failed to get project root path.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
                     return ""

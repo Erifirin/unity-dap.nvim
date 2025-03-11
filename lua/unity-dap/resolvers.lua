@@ -28,22 +28,39 @@ local M = {}
 ---Get list of Unity processes that available to work with
 ---@return UnityProcessInfo[]|nil
 local function list_unity_processes()
-    local extensions = require("unity-dap.vscode.extensions")
-    local path = extensions.find_extension_path("visualstudiotoolsforunity.vstuc")
+    local path = M.get_unity_extension_path()
+    if path == nil then
+        return nil
+    end
+
     local cmd = vim.system({ "dotnet", vim.fs.joinpath(path, "bin", "UnityAttachProbe.dll") }, { text = true })
-    local rs = cmd:wait(5000)
+    local out = cmd:wait(5000)
 
-    if rs.code ~= 0 then
-        vim.notify("Failed to call UnityAttachProbe.\n" .. rs.stderr, vim.log.levels.ERROR)
+    if out.code ~= 0 then
+        vim.notify(
+            "Failed to call UnityAttachProbe.\n" .. out.stderr,
+            vim.log.levels.ERROR,
+            { title = "unity-dap.nvim" }
+        )
         return nil
     end
 
-    if rs.stdout == nil or #rs.stdout == 0 then
-        vim.notify("Failed to find a running Unity Editor.", vim.log.levels.ERROR)
+    if out.stdout == nil or #out.stdout == 0 then
+        vim.notify("Failed to find a running Unity Editor.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
         return nil
     end
 
-    return vim.json.decode(rs.stdout, { luanil = { object = true, array = nil } })
+    local rs = {}
+    for line in out.stdout:gmatch("[^\r\n]+") do
+        if line ~= "" then
+            local json = vim.json.decode(line, { luanil = { object = true, array = true } })
+            for _, item in ipairs(json) do
+                table.insert(rs, item)
+            end
+        end
+    end
+
+    return rs
 end
 
 ---Get project info
@@ -59,6 +76,17 @@ local function get_project_info(path)
         return rs
     end
     return nil
+end
+
+---Returns path to Unity for Visual Studio Code extension
+---@return string?
+function M.get_unity_extension_path()
+    local extensions = require("unity-dap.vscode.extensions")
+    local path = extensions.find_extension_path("visualstudiotoolsforunity.vstuc")
+    if path == nil then
+        vim.notify("Unity for Visual Studio Code not installed.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
+    end
+    return path
 end
 
 ---Returns project root path

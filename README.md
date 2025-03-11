@@ -11,7 +11,7 @@ for nvim.
 
 - Neovim >= 0.10.0
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap)
-- `Unity for Visual Studio Code` extension installed via VS Code
+- [Unity for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=VisualStudioToolsForUnity.vstuc) extension installed via VS Code
 - .NET SDK installed and `dotnet` command available
 
 Also recommended [roslyn.nvim](https://github.com/seblyng/roslyn.nvim) language server.
