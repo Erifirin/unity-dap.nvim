@@ -1,20 +1,23 @@
 local M = {}
 
-M.setup = function()
-    local resolvers = require("unity-dap.resolvers")
-    local ex_root = resolvers.get_unity_extension_path()
-    if ex_root == nil then
+---Setup plugin
+---@param opts UnityDap.Config?
+M.setup = function(opts)
+    local config = require("unity-dap.config").setup(opts)
+    if config == nil then
+        vim.notify("Failed to setup.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
         return
     end
 
-    ---@diagnostic disable-next-line: param-type-mismatch
-    local logFile = vim.fs.joinpath(vim.fn.stdpath("log"), "unity-dap.log")
-
+    local resolvers = require("unity-dap.resolvers")
     local dap = require("dap")
+    local da_cmd = config.debug_adapter_cmd[1]
+    local da_args = vim.list_slice(config.debug_adapter_cmd, 2)
+
     dap.adapters.unity = {
         type = "executable",
-        command = "dotnet",
-        args = { vim.fs.joinpath(ex_root, "bin", "UnityDebugAdapter.dll") },
+        command = da_cmd,
+        args = da_args,
         name = "Attach to Unity Engine",
     }
 
@@ -23,7 +26,7 @@ M.setup = function()
             type = "unity",
             request = "attach",
             name = "Attach to Unity Engine",
-            logFile = logFile,
+            logFile = config.log_file,
             endPoint = function()
                 local unity_info = resolvers.get_unity_process()
                 if unity_info == nil then
@@ -39,11 +42,7 @@ M.setup = function()
             end,
             projectPath = function()
                 local path = resolvers.get_project_root_path()
-                if path == nil then
-                    vim.notify("Failed to get project root path.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
-                    return ""
-                end
-                return path
+                return path or ""
             end,
         },
     }

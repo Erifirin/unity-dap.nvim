@@ -28,13 +28,9 @@ local M = {}
 ---Get list of Unity processes that available to work with
 ---@return UnityProcessInfo[]|nil
 local function list_unity_processes()
-    local path = M.get_unity_extension_path()
-    if path == nil then
-        return nil
-    end
-
-    local cmd = vim.system({ "dotnet", vim.fs.joinpath(path, "bin", "UnityAttachProbe.dll") }, { text = true })
-    local out = cmd:wait(5000)
+    local config = require("unity-dap.config").get_current_config()
+    local obj = vim.system(config.attach_probe_cmd, { text = true })
+    local out = obj:wait(5000)
 
     if out.code ~= 0 then
         vim.notify(
@@ -51,7 +47,7 @@ local function list_unity_processes()
     end
 
     local rs = {}
-    for line in out.stdout:gmatch("[^\r\n]+") do
+    for line in out.stdout:gmatch("[^\n]+") do
         if line ~= "" then
             local json = vim.json.decode(line, { luanil = { object = true, array = true } })
             for _, item in ipairs(json) do
@@ -78,17 +74,6 @@ local function get_project_info(path)
     return nil
 end
 
----Returns path to Unity for Visual Studio Code extension
----@return string?
-function M.get_unity_extension_path()
-    local extensions = require("unity-dap.vscode.extensions")
-    local path = extensions.find_extension_path("visualstudiotoolsforunity.vstuc")
-    if path == nil then
-        vim.notify("Unity for Visual Studio Code not installed.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
-    end
-    return path
-end
-
 ---Returns project root path
 ---@param source? integer|string Number of buffer (0 = current) or path to a project file from which to start searching for the project root
 ---@return string?
@@ -105,6 +90,10 @@ function M.get_project_root_path(source)
         return false
     end)
 
+    if path == nil then
+        vim.notify("Failed to resolve the project root path.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
+    end
+
     return path
 end
 
@@ -115,7 +104,6 @@ function M.get_unity_process(source)
     -- try get project root path
     local project_root_path = M.get_project_root_path(source)
     if project_root_path == nil then
-        vim.notify("Failed to resolve the project root path.", vim.log.levels.ERROR, { title = "unity-dap.nvim" })
         return nil
     end
 
