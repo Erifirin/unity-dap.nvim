@@ -7,6 +7,7 @@
 ---@field attach_probe_cmd string[] Command to run UnityAttachProbe.
 ---@field debug_adapter_cmd string[] Command ro run Unity debug adapter.
 ---@field log_file string Path to log file
+---@field setup fun(opts:UnityDap.Config?): UnityDap.InternalConfig
 
 -- ------------------------------------------------------------------------------------------------
 -- Helpers
@@ -58,24 +59,18 @@ end
 -- Setup
 -- ------------------------------------------------------------------------------------------------
 
-local M = {}
-
 ---@type UnityDap.InternalConfig
 local config = {
     attach_probe_cmd = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
     debug_adapter_cmd = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
     log_file = get_default_log_file(),
+    setup = nil, --[[@diagnostic disable-line]]
 }
--- M.config = {
---     attach_probe_cmd = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
---     debug_adapter_cmd = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
---     log_file = get_default_log_file(),
--- }
 
 ---Extends default config with custom options and checks whether the plugin can works.
 ---@param opts UnityDap.Config? Custom config options
 ---@return UnityDap.InternalConfig? # Internal config or nil if something went wrong.
-function M.setup(opts)
+local function setup(opts)
     config = vim.tbl_deep_extend("force", config, opts or {})
 
     -- try resolve UnityAttachProbe
@@ -99,14 +94,13 @@ function M.setup(opts)
     return config
 end
 
----Returns current config
----@return UnityDap.InternalConfig
-function M.get_current_config()
-    return config
-end
-
-return setmetatable(M, {
+---@type UnityDap.InternalConfig
+local M = setmetatable({
+    setup = setup,
+}, {
     __index = function(_, k)
         return config[k]
     end,
 })
+
+return M

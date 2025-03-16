@@ -28,7 +28,7 @@ local M = {}
 ---Get list of Unity processes that available to work with
 ---@return UnityProcessInfo[]|nil
 local function list_unity_processes()
-    local config = require("unity-dap.config").get_current_config()
+    local config = require("unity-dap.config")
     local obj = vim.system(config.attach_probe_cmd, { text = true })
     local out = obj:wait(5000)
 
