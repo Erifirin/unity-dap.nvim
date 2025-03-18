@@ -1,7 +1,7 @@
 local M = {}
 
-local dot_files_path = vim.fs.joinpath(vim.env.HOME, ".vscode")
-local extensions_path = vim.fs.joinpath(dot_files_path, "extensions")
+local dotfiles_path = vim.fs.joinpath(vim.env.HOME, ".vscode")
+local extensions_path = vim.fs.joinpath(dotfiles_path, "extensions")
 
 ---Return all paths
 ---@param name string Extension name
