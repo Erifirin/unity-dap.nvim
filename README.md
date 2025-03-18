@@ -7,6 +7,11 @@ for nvim.
 > Work in progress.
 > The plugin is in development stage.
 
+Tested in:
+
+- Unity: 2022.3
+- Unity for Visual Studio Code: 1.1
+
 ## ⚡️ Requirements
 
 - Neovim >= 0.10.0
@@ -29,9 +34,37 @@ Install the plugin with your preferred package manager:
 ```lua
 {
     "erifirin/unity-dap.nvim",
+    opts = {
+        -- your configuration; leave empty for default settings
+    }
 }
 ```
 
 ## ⚙️ Configuration
 
-There are no options yet.
+By default the plugin starts with following settings:
+
+```lua
+{
+    -- Command to run UnityAttachProbe.
+    -- type: string[] | nil
+    -- By default - nil. In this case the plugin will use UnityAttachProbe.dll shipped with
+    -- Unity for Visual Studio Code extension (should be pre-installed).
+    attach_probe_cmd = nil,
+
+    -- Command to run Unity debug adapter.
+    -- type: string[] | nil
+    -- By default - nil. In this case the plugin will use UnityDebugAdapter.dll shipped with
+    -- Unity for Visual Studio Code extension (should be pre-installed).
+    debug_adapter_cmd = nil,
+
+    -- Log file.
+    -- type: string
+    -- By default - unity-dap.log located in vim logs default directory.
+    log_file = ... ,
+}
+```
+
+## Unity Setup
+
+TODO: Maybe required to install [Visual Studio Editor](https://docs.unity3d.com/Packages/com.unity.ide.visualstudio@2.0/manual/index.html) package.

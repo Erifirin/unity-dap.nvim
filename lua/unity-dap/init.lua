@@ -9,7 +9,6 @@ M.setup = function(opts)
         return
     end
 
-    local resolvers = require("unity-dap.resolvers")
     local dap = require("dap")
     local da_cmd = config.debug_adapter_cmd[1]
     local da_args = vim.list_slice(config.debug_adapter_cmd, 2)
@@ -28,6 +27,7 @@ M.setup = function(opts)
             name = "Attach to Unity Engine",
             logFile = config.log_file,
             endPoint = function()
+                local resolvers = require("unity-dap.resolvers")
                 local unity_info = resolvers.get_unity_process()
                 if unity_info == nil then
                     return ""
@@ -41,6 +41,7 @@ M.setup = function(opts)
                 return unity_info.address .. ":" .. unity_info.debuggerPort
             end,
             projectPath = function()
+                local resolvers = require("unity-dap.resolvers")
                 local path = resolvers.get_project_root_path()
                 return path or ""
             end,
