@@ -13,6 +13,25 @@ local function get_all_versions_paths(name)
     return vim.fn.expand(search_pattern, nil, true)
 end
 
+---Returns version form path or nil.
+---@param path string Path to extension.
+---@return string? Version of the extension or nil.
+local function get_version_from_path(path)
+    path = vim.fs.basename(path)
+
+    local ver = vim.fn.matchstr(path, "-[0-9.]*-")
+    if ver ~= nil and ver ~= "" and ver ~= "--" then
+        return string.sub(ver, 2, string.len(ver) - 1)
+    end
+
+    ver = vim.fn.matchstr(path, "-[0-9.]*$")
+    if ver ~= nil and ver ~= "" and ver ~= "-" then
+        return string.sub(ver, 2, string.len(ver))
+    end
+
+    return nil
+end
+
 ---Returns path with last version or nil
 ---@param paths? string[] list of paths to work with
 ---@return string?
@@ -25,13 +44,10 @@ local function get_last_version_path(paths)
     local lastver = nil
 
     for _, path in ipairs(paths) do
-        local ver = vim.fn.matchstr(path, "-[0-9.]*")
-        if ver ~= "" then
-            ver = string.sub(ver, 2, string.len(ver))
-            if lastver == nil or vim.version.cmp(ver, lastver) > 0 then
-                lastver = ver
-                lastpath = path
-            end
+        local ver = get_version_from_path(path)
+        if ver ~= nil and (lastver == nil or vim.version.cmp(ver, lastver) > 0) then
+            lastver = ver
+            lastpath = path
         end
     end
 
