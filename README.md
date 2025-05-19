@@ -10,7 +10,7 @@ for nvim.
 Tested in:
 
 - Unity: 2022.3
-- Unity for Visual Studio Code: 1.1, 1.1.1
+- Unity for Visual Studio Code: 1.1, 1.1.1, 1.1.2
 
 ## ⚡️ Requirements
 
