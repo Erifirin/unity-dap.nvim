@@ -61,6 +61,7 @@ end
 
 ---@type UnityDap.InternalConfig
 local config = {
+    vscode_dotfiles_root = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
     attach_probe_cmd = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
     debug_adapter_cmd = nil, --[[@diagnostic disable-line]] -- for lazy auto resolve
     log_file = get_default_log_file(),
@@ -72,6 +73,11 @@ local config = {
 ---@return UnityDap.InternalConfig? # Internal config or nil if something went wrong.
 local function setup(opts)
     config = vim.tbl_deep_extend("force", config, opts or {})
+
+    -- setup vscode-tools
+    if config.vscode_dotfiles_root ~= nil then
+        require("vscode-tools.extensions").vscode_dotfiles_root = config.vscode_dotfiles_root
+    end
 
     -- try resolve UnityAttachProbe
     if config.attach_probe_cmd == nil then

@@ -46,6 +46,12 @@ By default the plugin starts with following settings:
 
 ```lua
 {
+    -- Path to vscode dotfiles.
+    -- type: string | nil
+    -- By default - nil. In this case the path will be resolved automatically.
+    -- ($HOME/.vscode, $HOME/.oss-code)
+    vscode_dotfiles_root = nil,
+
     -- Command to run UnityAttachProbe.
     -- type: string[] | nil
     -- By default - nil. In this case the plugin will use UnityAttachProbe.dll shipped with
