@@ -5,7 +5,7 @@ local M = {
 ---Return vscode dotfiles root path
 ---@return string
 local function get_dotfiles_root()
-    if M.vscode_dotfiles_root ~= nil then
+    if M.vscode_dotfiles_root == nil then
         local dotfiles_roots = {
             vim.fs.joinpath(vim.env.HOME, ".vscode"),
             vim.fs.joinpath(vim.env.HOME, ".oss-code"),
@@ -26,7 +26,7 @@ end
 ---@param name string Extension name
 ---@return string[]
 local function get_all_versions_paths(name)
-    local extensions_path = get_dotfiles_root()
+    local extensions_path = vim.fs.joinpath(get_dotfiles_root(), "extensions")
     local search_pattern = vim.fs.joinpath(extensions_path, name .. "-*")
     ---@type string[]
     ---@diagnostic disable-next-line: assign-type-mismatch
