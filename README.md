@@ -9,6 +9,7 @@ for nvim.
 
 Tested in:
 
+- Linux/Windows
 - Unity: 2022.3
 - Unity for Visual Studio Code: 1.1, 1.1.1, 1.1.2
 
@@ -49,7 +50,7 @@ By default the plugin starts with following settings:
     -- Path to vscode dotfiles.
     -- type: string | nil
     -- By default - nil. In this case the path will be resolved automatically.
-    -- ($HOME/.vscode, $HOME/.oss-code)
+    -- ($HOME/.vscode, $HOME/.vscode-oss)
     vscode_dotfiles_root = nil,
 
     -- Command to run UnityAttachProbe.

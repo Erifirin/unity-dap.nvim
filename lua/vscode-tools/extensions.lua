@@ -8,7 +8,7 @@ local function get_dotfiles_root()
     if M.vscode_dotfiles_root == nil then
         local dotfiles_roots = {
             vim.fs.joinpath(vim.env.HOME, ".vscode"),
-            vim.fs.joinpath(vim.env.HOME, ".oss-code"),
+            vim.fs.joinpath(vim.env.HOME, ".vscode-oss"),
         }
 
         for _, path in ipairs(dotfiles_roots) do
