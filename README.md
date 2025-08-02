@@ -7,10 +7,15 @@ for nvim.
 > Work in progress.
 > The plugin is in development stage.
 
+> [!Caution]
+> You will be in breach of the license terms for the extension if you use it for Neovim development. To quote the license terms:
+>
+>> (a) Use with In-Scope Products and Services. You may install and use the Software only with Microsoft Visual Studio Code, vscode.dev, GitHub Codespaces (“Codespaces”) from GitHub, Inc. (“GitHub”), and successor Microsoft, GitHub, and other Microsoft affiliates’ products and services (collectively, the “In-Scope Products and Services”).
+
 Tested in:
 
 - Linux/Windows
-- Unity: 2022.3
+- Unity: 2022.3, 6000.0
 - Unity for Visual Studio Code: 1.1, 1.1.1, 1.1.2
 
 ## ⚡️ Requirements
